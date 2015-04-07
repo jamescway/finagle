@@ -20,4 +20,7 @@ Gem::Specification.new do |s|
 
   s.files        = Dir.glob("{bin,lib}/**/*")
   s.require_path = 'lib'
+
+  s.add_dependency 'test-unit'
+  s.add_dependency 'thread_safe', '~> 0.3.4'
 end
