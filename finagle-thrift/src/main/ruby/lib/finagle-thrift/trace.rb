@@ -2,6 +2,7 @@ module Trace
   extend self
   DEFAULT_SAMPLE_RATE = 0.001
   TRACE_ID_UPPER_BOUND = 2 ** 64
+  TRACE_STACK = :trace_stack
 
   def id
     if stack.empty?
@@ -55,10 +56,6 @@ module Trace
 
   def tracer=(tracer)
     @tracer = tracer
-  end
-
-  def stack=(stack)
-    Thread.current[:trace_stack] = stack
   end
 
   class TraceId
@@ -150,8 +147,13 @@ module Trace
 
   private
 
+
+  def stack=(stack)
+    Thread.current[TRACE_STACK] = stack
+  end
+
   def stack
-    Thread.current[:trace_stack] ||= []
+    Thread.current[TRACE_STACK] ||= []
   end
 
   def tracer
