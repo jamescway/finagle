@@ -29,7 +29,7 @@ class TraceTest < Test::Unit::TestCase
   end
 
   def test_stack=
-    Trace.stack = [1]
+    Trace.send("stack=",[1])
     stack = Trace.send(:stack)
     assert_equal [1], stack
   end
