@@ -33,7 +33,7 @@ module Trace
         saved_stack = stack.dup
         yield
       ensure
-        @stack = saved_stack
+        stack = saved_stack
       end
     end
   end
@@ -55,6 +55,10 @@ module Trace
 
   def tracer=(tracer)
     @tracer = tracer
+  end
+
+  def stack=(stack)
+    Thread.current[:trace_stack] = stack
   end
 
   class TraceId
@@ -85,11 +89,11 @@ module Trace
       "TraceId(trace_id = #{@trace_id.to_s}, parent_id = #{@parent_id.to_s}, span_id = #{@span_id.to_s}, sampled = #{@sampled.to_s}, flags = #{@flags.to_s})"
     end
   end
-  
+
   # there are a total of 64 flags that can be passed down with the various tracing headers
   # at the time of writing only one is used (debug).
   #
-  # Note that using the 64th bit in Ruby requires some sign conversion since Thrift i64s are signed 
+  # Note that using the 64th bit in Ruby requires some sign conversion since Thrift i64s are signed
   # but Ruby won't do the right thing if you try to set 1 << 64
   class Flags
     # no flags set
@@ -147,7 +151,7 @@ module Trace
   private
 
   def stack
-    @stack ||= []
+    Thread.current[:trace_stack] ||= []
   end
 
   def tracer
